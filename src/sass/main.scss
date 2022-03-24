@@ -4,4 +4,13 @@
  */
 
 // Стили для файла с примером HTML-фрагмента
-@import './example';
+@import './reset.scss';
+@import './container.scss';
+@import './header.scss';
+@import './choose-hero.scss';
+
+body {
+  background-color: #e0ecf7;
+  background-image: linear-gradient(90deg, #111213 0%, #310202 100%);
+  color: #e0ecf7;
+}
