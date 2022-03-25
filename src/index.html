@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Marvel Battle</title>
+    <title>Superhero Battle</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/1.0.0/modern-normalize.min.css"
@@ -14,13 +14,25 @@
   <body>
     <header class="header">
       <div class="container">
-        <input type="text" class="input" />
+        <input type="text" class="input" id="search-hero" />
       </div>
     </header>
     <main>
       <section class="choose-hero">
         <div class="container">
           <ul class="heroes-list"></ul>
+        </div>
+      </section>
+      <section class="choose-opponent">
+        <div class="container">
+          <div class="card-wrap">
+            <div class="hero-card hidden"></div>
+            <div class="opponent-card hidden"></div>
+          </div>
+          <div class="btn-wrap">
+            <button type="button" class="search-opponent-btn hidden btn">Шукати опонента</button>
+            <button type="button" class="start-btn hidden btn">Старт</button>
+          </div>
         </div>
       </section>
     </main>

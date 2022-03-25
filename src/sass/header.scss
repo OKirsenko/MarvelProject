@@ -1,8 +1,8 @@
 .header {
   padding-top: 15px;
   padding-bottom: 15px;
-  background-color: #132b42;
-  background-image: linear-gradient(90deg, #111213 0%, #310202 100%);
+  // background-color: #132b42;
+  background-image: linear-gradient(90deg, rgba(3, 46, 88, 0.4) 0%, rgba(49, 2, 2, 0.4) 100%);
   width: 100%;
   display: flex;
   justify-content: center;
@@ -16,5 +16,6 @@
     border: none;
     outline: none;
     border-radius: 5px;
+    color: #e0ecf7;
   }
 }
