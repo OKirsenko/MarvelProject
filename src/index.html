@@ -14,7 +14,7 @@
   <body>
     <header class="header">
       <div class="container">
-        <input type="text" class="input" id="search-hero" />
+        <input type="text" class="input" id="search-hero" autocomplete="off" />
       </div>
     </header>
     <main>
@@ -32,6 +32,19 @@
           <div class="btn-wrap">
             <button type="button" class="search-opponent-btn hidden btn">Шукати опонента</button>
             <button type="button" class="start-btn hidden btn">Старт</button>
+          </div>
+        </div>
+      </section>
+      <section class="fight-section">
+        <div class="container">
+          <div class="fight-btn-wrap hidden">
+            <button class="hit-btn">УДАР</button>
+            <button class="block-btn">БЛОК</button>
+            <button class="evasion-btn">УХИЛЕННЯ</button>
+          </div>
+          <div class="fight-stat">
+            <ul class="hero-stat-list"></ul>
+            <ul class="opponent-stat-list"></ul>
           </div>
         </div>
       </section>

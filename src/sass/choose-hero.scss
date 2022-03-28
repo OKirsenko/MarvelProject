@@ -1,5 +1,5 @@
 .choose-hero {
-  padding-top: 60px;
+  padding-top: 130px;
 }
 .heroes-list {
   display: flex;
@@ -27,4 +27,19 @@
 }
 .hero-stats-item {
   text-align: left;
+}
+
+.fight-btn-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.hit-btn,
+.block-btn {
+  margin-right: 20px;
+}
+
+.fight-stat {
+  display: flex;
+  justify-content: space-around;
 }
