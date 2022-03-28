@@ -14,6 +14,9 @@ const headerEl = document.querySelector('.header');
 const fightBtnEl = document.querySelector('.fight-btn-wrap');
 const heroStat = document.querySelector('.hero-stat-list');
 const opponentStat = document.querySelector('.opponent-stat-list');
+const fightStat = document.querySelector('.fight-stat');
+const finalEl = document.querySelector('.final-wrap');
+const startEl = document.querySelector('.start-wrap');
 
 searchHeroEl.addEventListener('input', debounce(onHeroSearch, DEBOUNCE_DELAY));
 heroesListEl.addEventListener('click', onHeroClick);
@@ -28,10 +31,11 @@ function onHeroSearch(e) {
   query = e.target.value.trim().toLowerCase();
   reset();
   if (query.length === 0) {
+    startEl.classList.remove('hidden');
     heroesListEl.innerHTML = '';
     return;
   }
-
+  if (query.length > 0) startEl.classList.add('hidden');
   let heroesFiltered = heroesFilter(query);
   markupHeroes(heroesFiltered);
 }
@@ -77,6 +81,7 @@ function onHeroClick(e) {
   heroCardEl.classList.remove('hidden');
   heroId = e.target.closest('li').dataset.id;
   heroesListEl.innerHTML = '';
+  searchHeroEl.value = '';
   markupHeroCard(heroId);
 }
 
@@ -115,6 +120,8 @@ function markupHeroCard(heroId) {
 
 function onsearchOpponentBtnClick() {
   opponentCardEl.classList.remove('hidden');
+  headerEl.classList.add('hidden');
+
   changeOpponent();
 }
 
@@ -153,13 +160,8 @@ function markupOpponentCard() {
 function onStartClick() {
   searchOpponentBtn.classList.add('hidden');
   startBtn.classList.add('hidden');
-  headerEl.classList.add('hidden');
   fightBtnEl.classList.remove('hidden');
-  // const x = heroCardEl.querySelector('.power');
-  // console.log(x);
-  // console.log(x.dataset.power);
-  // const y = x.querySelector('span');
-  // y.textContent = 'abv';
+  fightStat.classList.remove('hidden');
   fightFunc();
 }
 
@@ -200,7 +202,19 @@ function onFightClick(e) {
     default:
       break;
   }
+  if (+refs.heroPower.textContent <= 0) {
+    refs.heroPower.textContent = 0;
+    markupFinal('Ти програв!');
+  } else if (+refs.opponentPower.textContent <= 0) {
+    refs.opponentPower.textContent = 0;
+    markupFinal('Ти виграв!');
+  }
 }
+
+let heroC = '';
+let heroDur = '';
+let opC = '';
+let opDur = '';
 
 function onHitClick(refs) {
   const {
@@ -213,10 +227,6 @@ function onHitClick(refs) {
     opponentDurability,
     randomBoolean,
   } = refs;
-  let heroC = '';
-  let heroDur = '';
-  let opC = '';
-  let opDur = '';
 
   switch (opponentAction) {
     case 'hit':
@@ -259,17 +269,21 @@ function onBlockClick(refs) {
   } = refs;
   switch (opponentAction) {
     case 'hit':
-      opponentDurability.textContent = Math.floor(
-        +opponentDurability.textContent - +opponentDurability.textContent * 0.1,
-      );
-      heroPower.textContent = Math.floor(+heroPower.textContent - +opponentCombat.textContent / 5);
+      opDur = Math.floor(+opponentDurability.textContent * 0.1);
+      opC = +opponentCombat.textContent / 5;
+      opponentDurability.textContent = Math.floor(+opponentDurability.textContent - opDur);
+      heroPower.textContent = Math.floor(+heroPower.textContent - opC);
+      markupStat('Блок', opC, 0, 'Удар', 0, opDur);
       break;
     case 'block':
+      markupStat('Блок', 0, 0, 'Блок', 0, 0);
+
       break;
     case 'evasion':
-      opponentDurability.textContent = Math.floor(
-        +opponentDurability.textContent - +opponentDurability.textContent * 0.05,
-      );
+      opDur = Math.floor(+opponentDurability.textContent * 0.05);
+      opponentDurability.textContent = Math.floor(+opponentDurability.textContent - opDur);
+      markupStat('Блок', 0, 0, 'Ухилення', 0, opDur);
+
       break;
 
     default:
@@ -290,22 +304,30 @@ function onEvasionClick(refs) {
   } = refs;
   switch (opponentAction) {
     case 'hit':
-      opponentDurability.textContent = Math.floor(
-        +opponentDurability.textContent - +opponentDurability.textContent * 0.05,
-      );
+      opDur = Math.floor(+opponentDurability.textContent * 0.05);
+      opC = +opponentCombat.textContent;
+      opponentDurability.textContent = Math.floor(+opponentDurability.textContent - opDur);
       if (randomBoolean) {
-        heroPower.textContent = Math.floor(+heroPower.textContent - +opponentCombat.textContent);
+        heroPower.textContent = Math.floor(+heroPower.textContent - opC);
       }
+
+      markupStat('Ухилення', opC, 0, 'Удар', 0, opDur);
+
       break;
     case 'block':
+      heroDur = Math.floor(+heroDurability.textContent * 0.05);
+      heroDurability.textContent = Math.floor(+heroDurability.textContent - heroDur);
+      markupStat('Ухилення', 0, heroDur, 'Блок', 0, 0);
+
       break;
     case 'evasion':
-      opponentDurability.textContent = Math.floor(
-        +opponentDurability.textContent - +opponentDurability.textContent * 0.05,
-      );
-      heroDurability.textContent = Math.floor(
-        +heroDurability.textContent - +heroDurability.textContent * 0.05,
-      );
+      opDur = Math.floor(+opponentDurability.textContent * 0.05);
+      heroDur = Math.floor(+heroDurability.textContent * 0.05);
+
+      opponentDurability.textContent = Math.floor(+opponentDurability.textContent - opDur);
+      heroDurability.textContent = Math.floor(+heroDurability.textContent - heroDur);
+      markupStat('Ухилення', 0, heroDur, 'Ухилення', 0, opDur);
+
       break;
 
     default:
@@ -319,12 +341,29 @@ function randomAction() {
   return actions[i];
 }
 
-console.log(heroes[0]);
-
 function markupStat(heroAction, heroDem, heroDur, opAction, opDem, opDur) {
-  console.log('i');
-  const markupHero = `<li>${heroAction}| -${heroDem}| -${heroDur}</li>`;
-  const markupOpponent = `<li>${opAction}| -${opDem}| -${opDur}</li>`;
-  heroStat.insertAdjacentHTML('beforeend', markupHero);
-  opponentStat.insertAdjacentHTML('beforeend', markupOpponent);
+  const markupHero = `<li>${heroAction} | -${heroDem} | -${heroDur}</li>`;
+  const markupOpponent = `<li>${opAction} | -${opDem} | -${opDur}</li>`;
+  heroStat.insertAdjacentHTML('afterbegin', markupHero);
+  opponentStat.insertAdjacentHTML('afterbegin', markupOpponent);
+}
+
+function markupFinal(result) {
+  fightBtnEl.classList.add('hidden');
+  fightStat.classList.add('hidden');
+  finalEl.classList.remove('hidden');
+  const markup = `<h2 class="final-header">${result}</h2> <button class='again-btn btn'>Грати знову</button>`;
+  finalEl.innerHTML = markup;
+  const againBtn = finalEl.querySelector('.again-btn');
+  againBtn.addEventListener('click', onAgainClick);
+}
+
+function onAgainClick() {
+  headerEl.classList.remove('hidden');
+  startEl.classList.remove('hidden');
+  heroCardEl.classList.add('hidden');
+  opponentCardEl.classList.add('hidden');
+  finalEl.classList.add('hidden');
+  heroStat.innerHTML = '';
+  opponentStat.innerHTML = '';
 }
